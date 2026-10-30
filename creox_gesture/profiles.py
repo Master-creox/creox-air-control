@@ -31,6 +31,25 @@ PROFILES = {
         "volume_down": "scroll_down",  # wheel down: log scroll down
         "palm_pause": "palm_pause",
     },
+    # Legendary: browser tabs + media control, same 6 gestures.
+    "browser": {
+        "move": "move",
+        "click": "click",
+        "next": "next_tab",    # Ctrl+Tab
+        "prev": "prev_tab",    # Ctrl+Shift+Tab
+        "volume_up": "scroll_up",
+        "volume_down": "scroll_down",
+        "palm_pause": "palm_pause",
+    },
+    "media": {
+        "move": "move",
+        "click": "media_play_pause",  # pinch = play/pause in media profile
+        "next": "media_next",
+        "prev": "media_prev",
+        "volume_up": "volume_up",
+        "volume_down": "volume_down",
+        "palm_pause": "palm_pause",
+    },
 }
 
 

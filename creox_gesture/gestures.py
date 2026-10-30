@@ -28,11 +28,13 @@ def _finger_extended(lm, finger):
     return _dist(lm[TIP[finger]], wrist) > _dist(lm[PIP[finger]], wrist) * 1.15
 
 
-def classify(lm):
+def classify(lm, pinch_threshold=0.05):
     """Return one of: move, click, palm_pause, or None.
 
     Swipe gestures (next/prev/volume) are temporal — they need motion
     over frames — so they live in SwipeDetector, not here.
+    pinch_threshold is tunable via Settings (default 0.05, the
+    Phase 1 laptop-verified value).
     """
     if lm is None or len(lm) != 21:
         return None
@@ -41,7 +43,7 @@ def classify(lm):
     except (TypeError, IndexError):
         return None
     # Pinch first: thumb tip very close to index tip.
-    if _dist(lm[4], lm[8]) < 0.05:
+    if _dist(lm[4], lm[8]) < pinch_threshold:
         return "click"
     # Open palm: all four fingers extended.
     if all(ext.values()):
@@ -51,6 +53,30 @@ def classify(lm):
         return "move"
     # Fist / unclear / anything else: no action, never guess.
     return None
+
+
+class ClickGate:
+    """Edge-triggered click (Legendary v1.1).
+
+    The old behaviour re-fired a click every 300 ms while a pinch was
+    held — correct per the debounce rule, but annoying in practice:
+    one held pinch clicked five times. ClickGate fires a click only
+    on the transition INTO a pinch (previous gesture was not click),
+    and stays silent while the pinch is held. Releasing and pinching
+    again fires again. Other gestures keep the normal debounce.
+    """
+
+    def __init__(self):
+        self._was_click = False
+
+    def allow(self, gesture):
+        if gesture == "click":
+            if self._was_click:
+                return False
+            self._was_click = True
+            return True
+        self._was_click = False
+        return True
 
 
 class SwipeDetector:

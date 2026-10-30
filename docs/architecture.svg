@@ -1,0 +1,41 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="900" height="520" viewBox="0 0 900 520" font-family="Arial, sans-serif">
+<rect width="900" height="520" fill="#050505"/>
+<text x="450" y="32" fill="#e8c766" font-size="22" text-anchor="middle" letter-spacing="2">CREOX AIR CONTROL — ARCHITECTURE</text>
+<text x="450" y="54" fill="#aaaaaa" font-size="13" text-anchor="middle">Camera gesture control, standalone — NOT an Aegis project. Own laptop only.</text>
+<g font-size="14">
+<rect x="30" y="90" width="160" height="70" fill="#111111" stroke="#e8c766" stroke-width="2"/>
+<text x="110" y="118" fill="#e8c766" text-anchor="middle">LAPTOP WEBCAM</text>
+<text x="110" y="140" fill="#cccccc" text-anchor="middle">Video frames</text>
+<rect x="230" y="90" width="200" height="70" fill="#111111" stroke="#e8c766" stroke-width="2"/>
+<text x="330" y="118" fill="#e8c766" text-anchor="middle">MediaPipe 1.x Tasks API</text>
+<text x="330" y="140" fill="#cccccc" text-anchor="middle">HandLandmarker + .task model</text>
+<rect x="470" y="90" width="200" height="70" fill="#111111" stroke="#e8c766" stroke-width="2"/>
+<text x="570" y="118" fill="#e8c766" text-anchor="middle">CLASSIFIER (gestures.py)</text>
+<text x="570" y="140" fill="#cccccc" text-anchor="middle">21 landmarks -&gt; gesture</text>
+<rect x="710" y="90" width="160" height="70" fill="#111111" stroke="#e8c766" stroke-width="2"/>
+<text x="790" y="118" fill="#e8c766" text-anchor="middle">GATES + SAFETY</text>
+<text x="790" y="140" fill="#cccccc" text-anchor="middle">Mode ON/OFF, ClickGate</text>
+<text x="30" y="210" width="160" height="70" fill="#111111" stroke="#444444" stroke-width="2"/>
+<text x="110" y="238" fill="#e8c766" text-anchor="middle">SETTINGS</text>
+<text x="110" y="260" fill="#cccccc" text-anchor="middle">air_control_settings.json</text>
+<rect x="230" y="210" width="200" height="70" fill="#111111" stroke="#e8c766" stroke-width="2"/>
+<text x="330" y="238" fill="#e8c766" text-anchor="middle">PROFILES (profiles.py)</text>
+<text x="330" y="260" fill="#cccccc" text-anchor="middle">slides / suit / browser / media</text>
+<rect x="470" y="210" width="200" height="70" fill="#111111" stroke="#e8c766" stroke-width="2"/>
+<text x="570" y="238" fill="#e8c766" text-anchor="middle">ACTIONS (actions.py)</text>
+<text x="570" y="260" fill="#cccccc" text-anchor="middle">Allowlist only — nothing else fires</text>
+<rect x="710" y="210" width="160" height="70" fill="#111111" stroke="#444444" stroke-width="2"/>
+<text x="790" y="238" fill="#e8c766" text-anchor="middle">HISTORY</text>
+<text x="790" y="260" fill="#cccccc" text-anchor="middle">gesture_log.jsonl (local)</text>
+<rect x="230" y="330" width="440" height="70" fill="#111111" stroke="#e11d2e" stroke-width="2"/>
+<text x="450" y="358" fill="#ffffff" text-anchor="middle">TARGET WINDOW (active window only)</text>
+<text x="450" y="380" fill="#cccccc" text-anchor="middle">Slides / music / browser / media / Suit HUD (SIMULATED systems)</text>
+</g>
+<g stroke="#e8c766" stroke-width="2" fill="none">
+<path d="M190 125 H230"/><path d="M430 125 H470"/><path d="M670 125 H710"/>
+<path d="M790 160 V210"/><path d="M570 280 V330"/>
+</g>
+<text x="450" y="440" fill="#aaaaaa" font-size="13" text-anchor="middle">Safety, locked: mode starts OFF (G toggles), hand lost / low light = NO action, never guess.</text>
+<text x="450" y="462" fill="#aaaaaa" font-size="13" text-anchor="middle">Unclear hand / fist = None. Open palm hold = pause. One pinch = one click (ClickGate).</text>
+<text x="450" y="490" fill="#aaaaaa" font-size="13" text-anchor="middle">NOT built yet (roadmap only): phone control, ESP32 wristband — see docs/phone-esp32-roadmap.md.</text>
+</svg>

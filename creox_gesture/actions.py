@@ -21,6 +21,12 @@ ACTIONS = {
     "scroll_down": ("Scroll down (log)", "scroll_down"),
     "panel_next": ("Next panel / focus item (Tab)", "tab"),
     "panel_prev": ("Previous panel / focus item (Shift+Tab)", "shift+tab"),
+    # Legendary profiles: browser tabs + media keys (pyautogui names).
+    "next_tab": ("Next browser tab (Ctrl+Tab)", "ctrl+tab"),
+    "prev_tab": ("Previous browser tab (Ctrl+Shift+Tab)", "ctrl+shift+tab"),
+    "media_next": ("Next media track", "audionext"),
+    "media_prev": ("Previous media track", "audioprev"),
+    "media_play_pause": ("Play / pause media", "audioplaypause"),
 }
 
 
@@ -55,6 +61,10 @@ def fire(gesture):
         pyautogui.scroll(-5)
     elif key == "shift+tab":
         pyautogui.hotkey("shift", "tab")
+    elif key == "ctrl+tab":
+        pyautogui.hotkey("ctrl", "tab")
+    elif key == "ctrl+shift+tab":
+        pyautogui.hotkey("ctrl", "shift", "tab")
     else:
         pyautogui.press(key)
     return (description, True)

@@ -1,4 +1,4 @@
-"""Webcam app — Phase 1: slides + music, own laptop only.
+"""Webcam app — Creox Air Control, Legendary package.
 
 Run from the project folder on his laptop:
     python -m pip install -r requirements.txt
@@ -11,16 +11,20 @@ NOT in the repo (binary files cannot be pushed by the Muse app):
        https://storage.googleapis.com/mediapipe-models/hand_landmarker/hand_landmarker/float16/1/hand_landmarker.task
     2. Put it in the creox_gesture/ folder, next to this file.
     3. Run the app again. If the file is missing, the app says so
-       plainly instead of crashing.
+       plainly instead of crashing. Re-place it after every fresh
+       ZIP download — it is not in the ZIP.
 
-Controls: press G to toggle gesture mode ON/OFF, P to switch profile
-(slides_music <-> suit), Q to quit. Start with a profile:
-    python -m creox_gesture.app --profile suit
-The preview window always shows mode + profile + detected gesture, so
-the user sees exactly what the system sees. Mode starts OFF on purpose.
-Phase 2 (suit): open suit_hud.html in a browser, focus it, then turn
-mode ON — gestures drive the Suit HUD (Tab navigation, click toggle,
-wheel scroll). All Suit HUD systems are SIMULATED, not a real suit.
+Controls: G toggles gesture mode ON/OFF, P cycles profiles
+(slides_music -> suit -> browser -> media), Q quits. Mode starts OFF.
+Legendary changes: one pinch = one click (ClickGate, no more repeat
+clicks while held); settings from air_control_settings.json
+(calibration, never crashes on bad settings); every fired action is
+logged to gesture_log.jsonl for debugging.
+
+Profiles: slides_music (Phase 1, laptop-verified), suit (Phase 2,
+Suit HUD — all systems SIMULATED), browser (tabs), media (tracks).
+Air Control stays standalone and is NOT an Aegis project: it only
+sends generic key/click/scroll actions to the active window.
 """
 from __future__ import annotations
 
@@ -29,8 +33,10 @@ import time
 from pathlib import Path
 
 from .actions import fire
-from .gestures import SwipeDetector, classify
+from .gestures import ClickGate, SwipeDetector, classify
+from .history import GestureHistory
 from .profiles import PROFILES, translate
+from .settings import Settings
 
 MODEL_NAME = "hand_landmarker.task"
 
@@ -39,7 +45,14 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--profile", default="slides_music",
                         choices=list(PROFILES))
-    profile = parser.parse_args().profile
+    parser.add_argument("--settings", default=None,
+                        help="Path to air_control_settings.json (optional)")
+    args = parser.parse_args()
+    profile = args.profile
+    settings = Settings.load(args.settings)
+    print(f"Settings: {settings.source} "
+          f"(debounce={settings.debounce_seconds}s, "
+          f"pinch={settings.pinch_threshold}, swipe={settings.swipe_threshold})")
     try:
         import cv2
         import mediapipe as mp
@@ -59,12 +72,17 @@ def main():
         base_options=mp_python.BaseOptions(model_asset_path=str(model_path)),
         running_mode=vision.RunningMode.VIDEO,
         num_hands=1,
-        min_hand_detection_confidence=0.7,
-        min_tracking_confidence=0.7,
+        min_hand_detection_confidence=settings.min_hand_detection_confidence,
+        min_tracking_confidence=settings.min_tracking_confidence,
     )
     mode_on = False
     last_fired = 0.0
-    swipe = SwipeDetector()
+    swipe = SwipeDetector(window=settings.swipe_window,
+                          threshold=settings.swipe_threshold,
+                          cooldown_frames=settings.swipe_cooldown_frames)
+    click_gate = ClickGate()
+    history = GestureHistory(max_events=settings.gesture_log_max_events,
+                             log_file=settings.gesture_log_file)
     cap = cv2.VideoCapture(0)
     if not cap.isOpened():
         print("Webcam not found. Plug in / enable the laptop camera and retry.")
@@ -86,16 +104,19 @@ def main():
             gesture = None
             if result.hand_landmarks:
                 lm = [(p.x, p.y) for p in result.hand_landmarks[0]]
-                gesture = classify(lm)
+                gesture = classify(lm, pinch_threshold=settings.pinch_threshold)
                 swipe_result = swipe.update(lm[8])
                 if gesture != "palm_pause" and swipe_result:
                     gesture = swipe_result
             now = time.time()
-            if mode_on and gesture and gesture != "palm_pause" and now - last_fired >= 0.3:
+            if (mode_on and gesture and gesture != "palm_pause"
+                    and click_gate.allow(gesture)
+                    and now - last_fired >= settings.debounce_seconds):
                 action = translate(profile, gesture)
-                description, _performed = fire(action) if action else (None, False)
+                description, performed = fire(action) if action else (None, False)
                 if description:
                     print(f"{profile} | {gesture} -> {action}: {description}")
+                    history.record(gesture, action, performed)
                 last_fired = now
             label = f"MODE: {'ON' if mode_on else 'OFF'}  {profile}  GESTURE: {gesture or '-'}"
             cv2.putText(frame, label, (10, 30), cv2.FONT_HERSHEY_SIMPLEX,

@@ -28,6 +28,20 @@ Tab = next system, Shift+Tab = previous, pinch click = toggle, hand up/down = sc
   <button class="system" data-name="FLIGHT">FLIGHT <span class="state">OFF</span></button>
 </div>
 <div id="log">Suit HUD ready. Focus this window, then use gestures.<br></div>
+<h2 style="font-size:16px;letter-spacing:2px;margin-top:28px;">GESTURE LEGEND — LEGENDARY PACKAGE</h2>
+<p class="note" style="max-width:640px;">Same 6 gestures, 4 profiles. Press P in the preview window to cycle:
+slides_music (slides + music) → suit (this HUD) → browser (tabs) → media (tracks).
+One pinch = one click in every profile. Open palm hold always pauses. Mode starts OFF.</p>
+<table style="max-width:640px;width:100%;border-collapse:collapse;color:#ccc;font-size:14px;">
+<tr><th style="text-align:left;border-bottom:1px solid #444;padding:6px;">Gesture</th><th style="text-align:left;border-bottom:1px solid #444;padding:6px;">Suit (this HUD)</th><th style="text-align:left;border-bottom:1px solid #444;padding:6px;">Browser</th><th style="text-align:left;border-bottom:1px solid #444;padding:6px;">Media</th></tr>
+<tr><td style="padding:6px;">Index move</td><td style="padding:6px;">Cursor</td><td style="padding:6px;">Cursor</td><td style="padding:6px;">Cursor</td></tr>
+<tr><td style="padding:6px;">Pinch</td><td style="padding:6px;">Toggle system</td><td style="padding:6px;">Click</td><td style="padding:6px;">Play / pause</td></tr>
+<tr><td style="padding:6px;">Swipe right</td><td style="padding:6px;">Tab (next)</td><td style="padding:6px;">Next tab</td><td style="padding:6px;">Next track</td></tr>
+<tr><td style="padding:6px;">Swipe left</td><td style="padding:6px;">Shift+Tab (prev)</td><td style="padding:6px;">Prev tab</td><td style="padding:6px;">Prev track</td></tr>
+<tr><td style="padding:6px;">Hand up / down</td><td style="padding:6px;">Scroll log</td><td style="padding:6px;">Scroll page</td><td style="padding:6px;">Volume up / down</td></tr>
+</table>
+<p class="note" style="max-width:640px;margin-top:16px;">All 4 systems above are SIMULATED. Gesture history is logged by the app to
+gesture_log.jsonl (own laptop only) — check it if a gesture misfires.</p>
 <script>
   const log = document.getElementById('log');
   function addLog(text) {

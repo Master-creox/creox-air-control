@@ -1,0 +1,1 @@
+{"debounce_seconds": 0.3, "pinch_threshold": 0.05, "swipe_threshold": 0.25, "swipe_window": 8, "swipe_cooldown_frames": 10, "min_hand_detection_confidence": 0.7, "min_tracking_confidence": 0.7, "gesture_log_file": "gesture_log.jsonl", "gesture_log_max_events": 200}
