@@ -27,6 +27,12 @@ Standalone project — not an Aegis Prime module.
 python -m pip install -r requirements.txt
 python -m creox_gesture.app
 ```
+**One extra file first (MediaPipe 1.x):** download
+`hand_landmarker.task` from
+https://storage.googleapis.com/mediapipe-models/hand_landmarker/hand_landmarker/float16/1/hand_landmarker.task
+and put it in the `creox_gesture/` folder. Without it the app prints
+exactly where to put it instead of crashing. This file is NOT in the
+repo because binary files cannot be pushed by the Muse app.
 Press `G` to toggle mode ON, `Q` to quit. Mode starts OFF on purpose.
 If OpenCV / MediaPipe are missing, the app says so plainly instead of
 crashing. No camera on a headless VM — the classifier itself is tested
