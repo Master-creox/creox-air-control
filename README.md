@@ -54,6 +54,14 @@ plus the action allowlist.
 - `tests/test_gestures.py` — 9 unittest cases
 - `BLUEPRINT.md` — the locked blueprint
 
+## Phase 2 — Suit HUD (standalone, NOT an Aegis project)
+Open `suit_hud.html` in a browser, focus it, then run the app with
+`--profile suit` (or press `P` in the preview window to switch profiles).
+Gestures: move = cursor, pinch = toggle the focused system, swipe
+right/left = Tab / Shift+Tab (next/previous system), hand up/down =
+scroll the log, open palm = pause. All Suit HUD systems (POWER CORE,
+HELMET, REPULSOR, FLIGHT) are SIMULATED — this is a control-panel
+prototype for a future suit design, not a real suit.
+
 ## Later phases (not started)
-Aegis HUD control, phone control, ESP32 wristband version — only when
-Akash asks, in that order of discussion, not by default.
+Phone control, ESP32 wristband version — only when Akash asks.

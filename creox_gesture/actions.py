@@ -16,6 +16,11 @@ ACTIONS = {
     "volume_up": ("Volume up", "volumeup"),
     "volume_down": ("Volume down", "volumedown"),
     "palm_pause": ("Pause gestures while palm is held", None),
+    # Phase 2 (Suit HUD): log scroll + system navigation, same gestures.
+    "scroll_up": ("Scroll up (log)", "scroll_up"),
+    "scroll_down": ("Scroll down (log)", "scroll_down"),
+    "panel_next": ("Next panel / focus item (Tab)", "tab"),
+    "panel_prev": ("Previous panel / focus item (Shift+Tab)", "shift+tab"),
 }
 
 
@@ -44,6 +49,12 @@ def fire(gesture):
         return (description, False)
     if key == "click":
         pyautogui.click()
+    elif key == "scroll_up":
+        pyautogui.scroll(5)
+    elif key == "scroll_down":
+        pyautogui.scroll(-5)
+    elif key == "shift+tab":
+        pyautogui.hotkey("shift", "tab")
     else:
         pyautogui.press(key)
     return (description, True)

@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Creox Suit HUD — SIMULATED</title>
+<style>
+  body { background: #050505; color: #e8c766; font-family: Arial, sans-serif; margin: 0; padding: 24px; }
+  h1 { margin: 0 0 4px; letter-spacing: 2px; }
+  .note { color: #aaa; margin-bottom: 20px; }
+  .systems { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; max-width: 640px; }
+  button.system { background: #111; color: #e8c766; border: 2px solid #444; padding: 20px; font-size: 18px; text-align: left; cursor: pointer; }
+  button.system:focus { border-color: #e8c766; outline: none; }
+  button.system.on { border-color: #e11d2e; color: #fff; background: #2a0505; }
+  button.system .state { float: right; }
+  #log { margin-top: 24px; max-width: 640px; background: #111; padding: 12px; height: 160px; overflow-y: auto; color: #ccc; font-family: monospace; }
+</style>
+</head>
+<body>
+<h1>CREOX SUIT HUD</h1>
+<p class="note">SIMULATED systems only — this is a control-panel prototype, not a real suit.
+Gesture control: open this page, focus it, then in the Air Control preview press G for mode ON and P for the suit profile.
+Tab = next system, Shift+Tab = previous, pinch click = toggle, hand up/down = scroll log.</p>
+<div class="systems">
+  <button class="system" data-name="POWER CORE">POWER CORE <span class="state">OFF</span></button>
+  <button class="system" data-name="HELMET">HELMET <span class="state">OFF</span></button>
+  <button class="system" data-name="REPULSOR">REPULSOR <span class="state">OFF</span></button>
+  <button class="system" data-name="FLIGHT">FLIGHT <span class="state">OFF</span></button>
+</div>
+<div id="log">Suit HUD ready. Focus this window, then use gestures.<br></div>
+<script>
+  const log = document.getElementById('log');
+  function addLog(text) {
+    log.innerHTML += text + '<br>';
+    log.scrollTop = log.scrollHeight;
+  }
+  document.querySelectorAll('button.system').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const on = btn.classList.toggle('on');
+      btn.querySelector('.state').textContent = on ? 'ON' : 'OFF';
+      addLog(btn.dataset.name + ' -> ' + (on ? 'ON (simulated)' : 'OFF (simulated)'));
+    });
+  });
+</script>
+</body>
+</html>

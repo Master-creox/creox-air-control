@@ -13,22 +13,33 @@ NOT in the repo (binary files cannot be pushed by the Muse app):
     3. Run the app again. If the file is missing, the app says so
        plainly instead of crashing.
 
-Controls: press G to toggle gesture mode ON/OFF, Q to quit.
-The preview window always shows mode + detected gesture, so the user
-sees exactly what the system sees. Mode starts OFF on purpose.
+Controls: press G to toggle gesture mode ON/OFF, P to switch profile
+(slides_music <-> suit), Q to quit. Start with a profile:
+    python -m creox_gesture.app --profile suit
+The preview window always shows mode + profile + detected gesture, so
+the user sees exactly what the system sees. Mode starts OFF on purpose.
+Phase 2 (suit): open suit_hud.html in a browser, focus it, then turn
+mode ON — gestures drive the Suit HUD (Tab navigation, click toggle,
+wheel scroll). All Suit HUD systems are SIMULATED, not a real suit.
 """
 from __future__ import annotations
 
+import argparse
 import time
 from pathlib import Path
 
 from .actions import fire
 from .gestures import SwipeDetector, classify
+from .profiles import PROFILES, translate
 
 MODEL_NAME = "hand_landmarker.task"
 
 
 def main():
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--profile", default="slides_music",
+                        choices=list(PROFILES))
+    profile = parser.parse_args().profile
     try:
         import cv2
         import mediapipe as mp
@@ -58,7 +69,7 @@ def main():
     if not cap.isOpened():
         print("Webcam not found. Plug in / enable the laptop camera and retry.")
         return 1
-    print("Gesture mode starts OFF. Press G to toggle, Q to quit.")
+    print(f"Profile: {profile}. Gesture mode starts OFF. Press G to toggle, P for profile, Q to quit.")
     with vision.HandLandmarker.create_from_options(options) as landmarker:
         frame_no = 0
         while True:
@@ -81,18 +92,23 @@ def main():
                     gesture = swipe_result
             now = time.time()
             if mode_on and gesture and gesture != "palm_pause" and now - last_fired >= 0.3:
-                description, _performed = fire(gesture)
+                action = translate(profile, gesture)
+                description, _performed = fire(action) if action else (None, False)
                 if description:
-                    print(f"{gesture}: {description}")
+                    print(f"{profile} | {gesture} -> {action}: {description}")
                 last_fired = now
-            label = f"MODE: {'ON' if mode_on else 'OFF'}  GESTURE: {gesture or '-'}"
+            label = f"MODE: {'ON' if mode_on else 'OFF'}  {profile}  GESTURE: {gesture or '-'}"
             cv2.putText(frame, label, (10, 30), cv2.FONT_HERSHEY_SIMPLEX,
                         0.7, (0, 255, 0) if mode_on else (0, 0, 255), 2)
-            cv2.imshow("Creox Air Control (G = mode, Q = quit)", frame)
+            cv2.imshow("Creox Air Control (G = mode, P = profile, Q = quit)", frame)
             key = cv2.waitKey(1) & 0xFF
             if key in (ord("g"), ord("G")):
                 mode_on = not mode_on
                 print(f"Gesture mode {'ON' if mode_on else 'OFF'}")
+            elif key in (ord("p"), ord("P")):
+                names = list(PROFILES)
+                profile = names[(names.index(profile) + 1) % len(names)]
+                print(f"Profile: {profile}")
             elif key in (ord("q"), ord("Q")):
                 break
     cap.release()
