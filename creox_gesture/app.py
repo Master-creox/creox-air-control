@@ -31,6 +31,7 @@ MODEL_NAME = "hand_landmarker.task"
 def main():
     try:
         import cv2
+        import mediapipe as mp
         from mediapipe.tasks import python as mp_python
         from mediapipe.tasks.python import vision
     except ImportError as exc:
@@ -66,8 +67,8 @@ def main():
                 break
             frame = cv2.flip(frame, 1)
             frame_no += 1
-            mp_image = vision.mp.Image(
-                image_format=vision.mp.ImageFormat.SRGB,
+            mp_image = mp.Image(
+                image_format=mp.ImageFormat.SRGB,
                 data=cv2.cvtColor(frame, cv2.COLOR_BGR2RGB))
             result = landmarker.detect_for_video(
                 mp_image, timestamp_ms=frame_no * 33)
